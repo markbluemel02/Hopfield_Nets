@@ -77,15 +77,15 @@ def weights_distribution_plot(num_neurons, num_of_patterns, params):
 
 if __name__ == '__main__':
     # run simulations
-    num_neurons = 75
-    num_of_flips = 37
-    num_of_patterns = 75
-    num_repetitions = 100
+    num_neurons = 100
+    num_of_flips = 50
+    num_of_patterns = 100
+    num_repetitions = 5
 
 
     rules = [
             #non-incremental
-            #'Hebb',
+            'Hebb',
             # 'Storkey',
             # 'Pseudoinverse',
             # 'KrauthMezard',
@@ -108,13 +108,13 @@ if __name__ == '__main__':
             # for sc effects
             # 'Hebb',
             # 'Storkey',
-            'DescentL2',
-            'DescentL1',
+            # 'DescentL2',
+            # 'DescentL1',
             # 'GardnerKrauthMezard',
             # 'DescentExpBarrierSI'
     ]
     options = [# Non-incremental
-               #{'incremental' : False, 'sc' : True },  #Hebbian
+               {'incremental' : False, 'sc' : True },  #Hebbian
                # {'incremental' : False, 'sc': True},  # Storkey
                # {},  #Pseudoinverse
                # {'sc' : False, 'lr': 1e-2, 'maxiter': 200},  # Krauth-Mezard
@@ -136,8 +136,8 @@ if __name__ == '__main__':
                 # effects of self connectivity
                 # {'incremental' : False, 'sc' : False },  #Hebbian
                 # {'incremental' : False, 'sc': False },  # Storkey
-                {'sc' : False, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL2
-                 {'sc' : False, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL1
+                # {'sc' : False, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL2
+                # {'sc' : False, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL1
                 # {'sc' : False, 'lr': 1e-2, 'k': 1.0, 'maxiter': 100},  # GardnerKrauthMezard
                 # {'sc' : False, 'incremental': False, 'tol': 1e-3, 'lmbd': 0.5},  # DescentExpBarrierSI #add bonds
                ]

@@ -1,0 +1,63 @@
+hydra:
+  run:
+    dir: experiments/${params.exp_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: experiments/${params.exp_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}_multirun
+    #subdir: ${now:%H-%M-%S}
+  sweeper:
+    params:
+      dataset.num_patterns: 40,60,80,100
+      params.seed: range(1,21,1)  # for 20 reps 20,120,5
+      params.save_training_acc: True
+params:
+  exp_name : 'Hopfield'
+  neurons: 100
+  epochs: 10
+  min_noise: 0
+  max_noise: 0.51 #exclusive
+  noise_step: 0.1
+  noise_level: 0 #this is for eval during training
+  sequential_updates: False
+  reps: 1 #check if this changes anything
+  num_workers: 1 #what option actually speeds things up?
+  pref_gpu: False
+  seed: 4
+  save_training_acc: True
+  save_model_params: True
+  save_patterns: True
+  post_process: False
+dataset:
+  num_patterns: 20
+  num_neurons: ${params.neurons}
+  spatial: False
+  semantic: False
+  p_bernoulli: 0.5 #find a better name for this
+  batch_fraction: 1
+optim_params:
+   name: 'torch.optim.SGD'
+   params:
+    lr: 0.1 #0.005 for Adam and 0.1 for SGD both seem to work
+binning_params:
+  name: 'im_net.binning.BinningAdaptiveSize'
+  params:
+    n_bins: [60, 60]
+    edges: [[-20, 20], [-20,20]]
+    use_bincenters: False
+layer_params:
+  initializer:
+    name: 'torch.nn.init.uniform_'
+    params:
+      a: -1.0 # lower limit
+      b: 1.0 # upper limit
+  hopfield_layer:
+    biases: 
+      - False
+      - False
+    input_sizes: 
+      - ${params.neurons}
+      - ${params.neurons}
+    output_size: ${params.neurons}
+    gamma: [0, 0, 1, -1, 0]
+    activation: 'im_net.activation_functions.SumActivation'
+    discrete_output_values: [-1, 1]
+    start_symmetric: False

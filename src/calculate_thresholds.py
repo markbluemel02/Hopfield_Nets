@@ -132,9 +132,9 @@ def generate_comparison_plot(rules, options, purpose):
 
 if __name__ == '__main__':
     epsilon = 0.95
-    num_neurons = 75
-    num_of_patterns = 75
-    num_repetitions = 100
+    num_neurons = 100
+    num_of_patterns = 100
+    num_repetitions = 5
 
     # rules_incremental = ['Hebb', 'Storkey', 'KrauthMezard', 'DiederichOpperI', 'DiederichOpperII',
     #          'DescentExpBarrier', 'DescentExpBarrierSI',
@@ -177,24 +177,26 @@ if __name__ == '__main__':
     #     get_bound(file_name, epsilon)
     # generate_comparison_plot(rules_nonincremental, options_nonincremental, 'non-incremental')
 
-    rules_sc_comparison = ['Hebb', 'DescentL2', 'GardnerKrauthMezard', 'DescentExpBarrierSI',
-                           'Hebb', 'DescentL2', 'GardnerKrauthMezard', 'DescentExpBarrierSI']
-    options_sc_comparison = [
-               {'incremental' : False, 'sc' : True},  #Hebbian
-               {'sc' : True,'incremental': False, 'tol': 1e-3, 'lmbd': 0.5, 'alpha': 0.001},  # DescentL2
-               {'sc' : True, 'lr' :  1e-2, 'k' : 1.0, 'maxiter' : 100},  #GardnerKrauthMezard
-               {'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5}, #DescentExpBarrierSI
-               {'incremental' : False, 'sc' : False},  #Hebbian
-               {'sc': False, 'incremental': False, 'tol': 1e-3, 'lmbd': 0.5, 'alpha': 0.001},  # DescentL2
-               {'sc': False, 'lr': 1e-2, 'k': 1.0, 'maxiter': 100},  # GardnerKrauthMezard
-               {'sc': False, 'incremental': False, 'tol': 1e-3, 'lmbd': 0.5},  # DescentExpBarrierSI
-               ]
-
-    for i in range(len(rules_sc_comparison)):
-        rule = rules_sc_comparison[i]
-        arguments = options_sc_comparison[i]
+    #rules_sc_comparison = ['Hebb', 'DescentL2', 'GardnerKrauthMezard', 'DescentExpBarrierSI',
+    #                       'Hebb', 'DescentL2', 'GardnerKrauthMezard', 'DescentExpBarrierSI']
+    #options_sc_comparison = [
+    #           {'incremental' : False, 'sc' : True},  #Hebbian
+    #           {'sc' : True,'incremental': False, 'tol': 1e-3, 'lmbd': 0.5, 'alpha': 0.001},  # DescentL2
+    #           {'sc' : True, 'lr' :  1e-2, 'k' : 1.0, 'maxiter' : 100},  #GardnerKrauthMezard
+    #           {'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5}, #DescentExpBarrierSI
+    #           {'incremental' : False, 'sc' : False},  #Hebbian
+    #           {'sc': False, 'incremental': False, 'tol': 1e-3, 'lmbd': 0.5, 'alpha': 0.001},  # DescentL2
+    #           {'sc': False, 'lr': 1e-2, 'k': 1.0, 'maxiter': 100},  # GardnerKrauthMezard
+    #           {'sc': False, 'incremental': False, 'tol': 1e-3, 'lmbd': 0.5},  # DescentExpBarrierSI
+    #           ]
+    rules_test = ['Hebb']
+    options_test = [{'incremental' : False, 'sc' : True}  #Hebbian
+                    ]
+    for i in range(len(rules_test)):
+        rule = rules_test[i]
+        arguments = options_test[i]
         file_name = f'../data/flips_and_patterns_{get_postfix(rule, arguments, num_neurons, num_of_patterns, num_repetitions)}.pkl'
         get_bound(file_name, epsilon)
-    generate_comparison_plot(rules_sc_comparison, options_sc_comparison, 'sc')
+    generate_comparison_plot(rules_test, options_test, 'non-incremental')
 
 

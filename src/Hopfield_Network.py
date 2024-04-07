@@ -68,6 +68,8 @@ class Hopfield_network():
             self.weights, self.biases = Gardner_Krauth_Mezard(self.num_neurons, patterns, self.weights, self.biases, **options)
         elif rule == 'Gardner':
             self.weights, self.biases = Gardner(self.num_neurons, patterns, self.weights, self.biases, **options)
+        elif rule == 'Infomorphic':
+            self.weights, self.biases = infomorphic_lr(self.num_neurons, patterns, self.weights, self.biases, **options)
         else:
             raise ValueError('the specified learning rule is not implemented')
         return None
@@ -131,8 +133,8 @@ if __name__ == '__main__':
     # rule = 'DescentExpBarrier'
     # options = {'incremental' : True, 'tol' : 1e-1, 'lmbd' : 0.5, 'alpha' : 0.01}
 
-    rule = 'DescentExpBarrierSI'
-    options = {'sc' : False, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5}
+    # rule = 'DescentExpBarrierSI'
+    # options = {'sc' : False, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5}
 
     # rule = 'DescentL2'
     # options = {'sc' : False, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.01}
@@ -145,6 +147,9 @@ if __name__ == '__main__':
 
     # rule = 'DescentCE'
     # options = {'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001}
+
+    rule = 'Infomorphic'
+    options = {'sc' : False, 'lr': 1e-2,  'maxiter' : 100,'goal':[0.1,0.1,1,0.1,0.1]}
 
     HN = Hopfield_network(num_neurons=num_neurons)
     patterns = [random_state(p=0.5, n=num_neurons, values=[-1, 1]) for i in range(num_patterns)]
