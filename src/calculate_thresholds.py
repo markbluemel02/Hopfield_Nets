@@ -132,8 +132,8 @@ def generate_comparison_plot(rules, options, purpose):
 
 if __name__ == '__main__':
     epsilon = 0.95
-    num_neurons = 100
-    num_of_patterns = 100
+    num_neurons = 75
+    num_of_patterns = 75
     num_repetitions = 5
 
     # rules_incremental = ['Hebb', 'Storkey', 'KrauthMezard', 'DiederichOpperI', 'DiederichOpperII',
@@ -189,8 +189,10 @@ if __name__ == '__main__':
     #           {'sc': False, 'lr': 1e-2, 'k': 1.0, 'maxiter': 100},  # GardnerKrauthMezard
     #           {'sc': False, 'incremental': False, 'tol': 1e-3, 'lmbd': 0.5},  # DescentExpBarrierSI
     #           ]
-    rules_test = ['Hebb']
-    options_test = [{'incremental' : False, 'sc' : True}  #Hebbian
+    rules_test = ['Hebb','GardnerKrauthMezard','Infomorphic']
+    options_test = [{'incremental' : True, 'sc' : True},  #Hebbian
+                    {'sc' : True, 'lr' :  1e-2, 'k' : 1.0, 'maxiter' : 100},
+                    {'sc' : False, 'lr': 1e-2,  'maxiter' : 100,'goal':[0.1,0.1,1,0.1,0.1]} #Infomorphic
                     ]
     for i in range(len(rules_test)):
         rule = rules_test[i]

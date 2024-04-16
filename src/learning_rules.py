@@ -493,9 +493,10 @@ def Gardner_Krauth_Mezard(N, patterns, weights, biases, sc, lr, k, maxiter):
 
 def infomorphic_lr(N, patterns, weights, biases,sc,lr,maxiter, goal):
     with initialize(version_base=None, config_path="conf", job_name="test_app"):
-        cfg = compose(config_name="IMHopfield", overrides=[f"params.neurons={N}",
+        cfg = compose(config_name="Infomorphic", overrides=[f"params.neurons={N}",
                                                         f"params.epochs={maxiter}",
-                                                        f"optim_params.params.lr={lr}"]
+                                                        f"optim_params.params.lr={lr}",
+                                                        f"layer_params.hopfield_layer.gamma={goal}"]
                                                         )
     #prepare torch
     device=hf.get_device(cfg.params.pref_gpu)
@@ -505,11 +506,12 @@ def infomorphic_lr(N, patterns, weights, biases,sc,lr,maxiter, goal):
     model = hopfield.IMHopfield(cfg.layer_params,binning_method).to(device)
     optimizer = hf.load_module(cfg.optim_params.name)(model.parameters(), **cfg.optim_params.params)
     with torch.no_grad():
-        model.hopfield_layer.sources[1].weight[:,:]=torch.from_numpy(weights).long()[:,:]
+        model.hopfield_layer.sources[1].weight[:,:]=torch.from_numpy(weights)[:,:]
+    W0=model.hopfield_layer.sources[1].weight.detach().numpy()
     #prepare train_loader
     Z = deepcopy(patterns)
     dataset=hf.CustomDataset(torch.from_numpy(Z).float())
-    batch_size=1
+    batch_size=N
     trainloader = torch.utils.data.DataLoader(dataset,batch_size,True,num_workers=cfg.params.num_workers)
     master_bar = fastprogress.master_bar(range(1,cfg.params.epochs + 1))
     for epoch_id in master_bar:

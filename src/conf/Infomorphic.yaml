@@ -57,7 +57,8 @@ layer_params:
       - ${params.neurons}
       - ${params.neurons}
     output_size: ${params.neurons}
-    gamma: [0, 0, 1, -1, 0]
+    gamma: [0.1, 0.1, 1, 0.1, 0.1]
     activation: 'im_net.activation_functions.SumActivation'
     discrete_output_values: [-1, 1]
     start_symmetric: False
+    positive_external: True

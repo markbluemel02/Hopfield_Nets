@@ -105,9 +105,9 @@ if __name__ == '__main__':
     num_neurons = 100
     num_patterns = 20
     sync = False
-    flips = 20
+    flips = 10
     time = 30
-    num = 2
+    num = 0
 
     # rule = 'Gardner'
     # options = {'sc' : True, 'lr': 1e-1, 'k' : 1.0}
@@ -149,7 +149,7 @@ if __name__ == '__main__':
     # options = {'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001}
 
     rule = 'Infomorphic'
-    options = {'sc' : False, 'lr': 1e-2,  'maxiter' : 100,'goal':[0.1,0.1,1,0.1,0.1]}
+    options = {'sc' : False, 'lr': 1e-1,  'maxiter' : 100,'goal':[0.1,0.1,1,0.1,0.1]}
 
     HN = Hopfield_network(num_neurons=num_neurons)
     patterns = [random_state(p=0.5, n=num_neurons, values=[-1, 1]) for i in range(num_patterns)]
