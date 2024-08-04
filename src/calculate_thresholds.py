@@ -125,7 +125,8 @@ def generate_comparison_plot(rules, options, purpose):
         suffix = 'sc'
     plt.xticks(fontsize=16)
     plt.yticks(fontsize=16)
-    plt.savefig(f'../imgs/Comparison_{suffix}.png')
+    #plt.savefig(f'../imgs/Comparison_{suffix}.pdf')
+    plt.savefig(f'../imgs/simple_symmetric_{suffix}.pdf',bbox_inches='tight')
     plt.show()
 
     return None
@@ -134,7 +135,7 @@ if __name__ == '__main__':
     epsilon = 0.95
     num_neurons = 75
     num_of_patterns = 75
-    num_repetitions = 5
+    num_repetitions = 1
 
     # rules_incremental = ['Hebb', 'Storkey', 'KrauthMezard', 'DiederichOpperI', 'DiederichOpperII',
     #          'DescentExpBarrier', 'DescentExpBarrierSI',
@@ -177,22 +178,44 @@ if __name__ == '__main__':
     #     get_bound(file_name, epsilon)
     # generate_comparison_plot(rules_nonincremental, options_nonincremental, 'non-incremental')
 
-    #rules_sc_comparison = ['Hebb', 'DescentL2', 'GardnerKrauthMezard', 'DescentExpBarrierSI',
-    #                       'Hebb', 'DescentL2', 'GardnerKrauthMezard', 'DescentExpBarrierSI']
-    #options_sc_comparison = [
-    #           {'incremental' : False, 'sc' : True},  #Hebbian
-    #           {'sc' : True,'incremental': False, 'tol': 1e-3, 'lmbd': 0.5, 'alpha': 0.001},  # DescentL2
-    #           {'sc' : True, 'lr' :  1e-2, 'k' : 1.0, 'maxiter' : 100},  #GardnerKrauthMezard
-    #           {'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5}, #DescentExpBarrierSI
-    #           {'incremental' : False, 'sc' : False},  #Hebbian
-    #           {'sc': False, 'incremental': False, 'tol': 1e-3, 'lmbd': 0.5, 'alpha': 0.001},  # DescentL2
-    #           {'sc': False, 'lr': 1e-2, 'k': 1.0, 'maxiter': 100},  # GardnerKrauthMezard
-    #           {'sc': False, 'incremental': False, 'tol': 1e-3, 'lmbd': 0.5},  # DescentExpBarrierSI
-    #           ]
-    rules_test = ['Hebb','GardnerKrauthMezard','Infomorphic']
-    options_test = [{'incremental' : True, 'sc' : True},  #Hebbian
-                    {'sc' : True, 'lr' :  1e-2, 'k' : 1.0, 'maxiter' : 100},
-                    {'sc' : False, 'lr': 1e-2,  'maxiter' : 100,'goal':[0.1,0.1,1,0.1,0.1]} #Infomorphic
+    #rules_sc_comparison = ['DescentL2', 'DescentExpBarrier','DescentExpBarrierSI', 'GardnerKrauthMezard',
+    #                     'DescentL2', 'DescentExpBarrier','DescentExpBarrierSI']
+    # options_sc_comparison = [
+    #            {'incremental' : False, 'sc' : True},  #Hebbian
+    #            {'sc' : True,'incremental': False, 'tol': 1e-3, 'lmbd': 0.5, 'alpha': 0.001},  # DescentL2
+    #            {'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001}, #DescentExpBarrierSI
+    #            {'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5}, #DescentExpBarrierSI
+    #            {'sc' : True, 'lr' :  1e-2, 'k' : 1.0, 'maxiter' : 100},  #GardnerKrauthMezard
+    #            {'incremental' : False, 'sc' : False},  #Hebbian
+    #            {'sc': False, 'incremental': False, 'tol': 1e-3, 'lmbd': 0.5, 'alpha': 0.001},  # DescentL2
+    #            {'sc': False, 'incremental': False, 'tol': 1e-3, 'lmbd': 0.5, 'alpha' : 0.001},  # DescentExpBarrierSI
+    #            {'sc': False, 'incremental': False, 'tol': 1e-3, 'lmbd': 0.5},  # DescentExpBarrierSI
+    #            #{'sc': False, 'lr': 1e-2, 'k': 1.0, 'maxiter': 100},  # GardnerKrauthMezard
+    #            ]
+    rules_test = [
+             'Hebb',
+             #'Storkey',
+             #'Pseudoinverse',
+             #'KrauthMezard',
+             #'DescentExpBarrier',
+             #'DescentExpBarrier',
+             #'DescentExpBarrierSI',
+             #'DescentL1',
+             #'DescentL2',
+             #'GardnerKrauthMezard',
+             'Infomorphic']
+    options_test = [
+                {'incremental' : False, 'sc' : True }, #Hebbian
+                #{'incremental': False, 'sc': True}, #Storkey
+                #{},  #Pseudoinverse
+                #{'sc' : False, 'lr': 1e-2, 'maxiter': 200},  # Krauth-Mezard
+                #{'sc' : False,'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentExpBarrier
+                #{'sc' : True,'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentExpBarrier
+                #{'sc' : True,'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5},  # DescentExpBarrierSI
+                #{'sc' : False,'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL1
+                #{'sc' : False,'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL2
+                #{'sc' : True, 'lr' :  1e-2, 'k' : 1.0, 'maxiter' : 100},  #GardnerKrauthMezard
+                {'sc' : False, 'lr': 1e-1,  'maxiter' : 100,'goal':[0.1,0.1,1,0.1,0]} #Infomorphic
                     ]
     for i in range(len(rules_test)):
         rule = rules_test[i]

@@ -491,12 +491,13 @@ def Gardner_Krauth_Mezard(N, patterns, weights, biases, sc, lr, k, maxiter):
             print('Maximum number of iterations has been exceeded')
     return weights, biases
 
-def infomorphic_lr(N, patterns, weights, biases,sc,lr,maxiter, goal):
+def infomorphic_lr(N, patterns, weights, biases,sc,lr,maxiter, goal,symmetric=True):
     with initialize(version_base=None, config_path="conf", job_name="test_app"):
-        cfg = compose(config_name="Infomorphic", overrides=[f"params.neurons={N}",
+        cfg = compose(config_name="basic_config", overrides=[f"params.neurons={N}",
                                                         f"params.epochs={maxiter}",
                                                         f"optim_params.params.lr={lr}",
-                                                        f"layer_params.hopfield_layer.gamma={goal}"]
+                                                        f"layer_params.hopfield_layer.gamma={goal}",
+                                                        f"params.simple_symmetric={symmetric}"]
                                                         )
     #prepare torch
     device=hf.get_device(cfg.params.pref_gpu)
@@ -516,6 +517,8 @@ def infomorphic_lr(N, patterns, weights, biases,sc,lr,maxiter, goal):
     master_bar = fastprogress.master_bar(range(1,cfg.params.epochs + 1))
     for epoch_id in master_bar:
         hopfield.train(trainloader,cfg.params.reps,model, optimizer,device,master_bar)
+        if cfg.params.simple_symmetric:
+            model.set_symmetric()
     weights=model.hopfield_layer.sources[1].weight.detach().numpy()
     return weights, biases
 

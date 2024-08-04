@@ -1,0 +1,50 @@
+hydra:
+  run:
+    dir: experiments/${params.exp_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: experiments/${params.exp_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}_multirun
+    #subdir: ${now:%H-%M-%S}
+params:
+  exp_name : 'torchTest'
+  epochs: 5
+  save_model_params: True
+  post_process: False
+  batch_size: 40
+  pref_gpu: False
+  seed: 1
+  num_workers: 4
+  lossfunction: 'torch.nn.MSELoss'
+optimizer:
+   name: 'torch.optim.SGD'
+   params:
+    lr: 0.01
+dataset:
+  dir: 'datasets'
+  name: 'FashionMNIST'
+  params:
+    frac_val: 0.01
+    num_class: 10
+module_params:
+  num_layers: 4
+  nonlinearity: 'torch.nn.ReLU'
+  initializer:
+    name: 'torch.nn.init.uniform_'
+    params:
+      a: -1.0 # lower limit
+      b: 1.0 # upper limit
+  layer1:
+    input_size: 784 #28*28
+    output_size: 512
+  layer2:
+    input_size: 512
+    output_size: 512
+  layer3:
+    input_size: 512
+    output_size: 40
+  layer4:
+    input_size: 40
+    output_size: 10
+datamanager_params:
+  cp_dir: 'checkpoints'
+  cp_spacing: 'linear' #'linear' or 'log'
+  cp_number: 4

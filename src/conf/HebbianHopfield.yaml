@@ -1,0 +1,63 @@
+hydra:
+  run:
+    dir: experiments/${params.exp_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: experiments/${params.exp_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}_multirun
+    #subdir: ${now:%H-%M-%S}
+  sweeper:
+    params:
+      hebbian_params.sequential_updates: False, True
+      params.seed: range(20,120,5)  #20 reps
+params:
+  exp_name : 'HebbianHopfield'
+  neurons: 500
+  reps: 5
+  epochs: 80
+  num_workers: 1
+  pref_gpu: False
+  seed: 15
+  save_model_params: True
+  post_process: False
+optimizer:
+   name: 'torch.optim.SGD'
+   params:
+    lr: 0.01
+dataset:
+  num_patterns: 15
+  num_neurons: ${params.neurons}
+  probability_1: 0.5 #find a better name for this
+  batch_fraction: 1
+binning:
+  name: 'im_net.binning.BinningFixedSize'
+  params:
+    n_bins: [60, 60]
+    edges: [[-20, 20], [-20,20]]
+    use_bincenters: False
+module_params:
+  initializer:
+    name: 'torch.nn.init.uniform_'
+    params:
+      a: -1.0 # lower limit
+      b: 1.0 # upper limit
+  hopfield_layer:
+    input_sizes: 
+      - ${params.neurons}
+      - ${params.neurons}
+    output_size: ${params.neurons}
+    gamma: [0.1, 0.1, 1.0, 0.1, 0.1]
+    activation: 'im_net.activation_functions.SumActivation'
+    discrete_output_values: [-1, 1]
+hebbian_params:
+  eval: True
+  start: 1000
+  stop: 1200
+  step: 1
+  layer1:
+    network_size: ${params.neurons}
+    bias: False
+  sequential_updates: False
+
+datamanager_params:
+  cp_dir: 'checkpoints'
+  cp_spacing: 'linear' #'linear' or 'log'
+  cp_number: 1
