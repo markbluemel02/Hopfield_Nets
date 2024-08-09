@@ -15,8 +15,9 @@ from hydra import compose, initialize
 from omegaconf import OmegaConf
 #add Infomorphic to sys_path:
 import sys
-sys.path.insert(0, '/home/mbluemel/Repo/infomorph_networks')
+sys.path.insert(0, '/home/mbluemel/Repo/infomorph_networks/src')
 import hopfield
+import training
 from im_net import helper_functions as hf
 
 def hebbian_lr(N, patterns, weights, biases, sc, incremental):
@@ -514,11 +515,7 @@ def infomorphic_lr(N, patterns, weights, biases,sc,lr,maxiter, goal,symmetric=Tr
     dataset=hf.CustomDataset(torch.from_numpy(Z).float())
     batch_size=N
     trainloader = torch.utils.data.DataLoader(dataset,batch_size,True,num_workers=cfg.params.num_workers)
-    master_bar = fastprogress.master_bar(range(1,cfg.params.epochs + 1))
-    for epoch_id in master_bar:
-        hopfield.train(trainloader,cfg.params.reps,model, optimizer,device,master_bar)
-        if cfg.params.simple_symmetric:
-            model.set_symmetric()
+    training.fixed_learning(cfg.params.epochs,model,device,optimizer,trainloader,cfg)
     weights=model.hopfield_layer.sources[1].weight.detach().numpy()
     return weights, biases
 

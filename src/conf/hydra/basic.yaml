@@ -14,6 +14,4 @@ launcher:
   #     num_cpus: 5 # The number of CPUs corresponds to the number of workers
 sweeper:
   params:
-    dataset.num_patterns: 85,90,95
     params.seed: range(1,6,1)  # for 20 reps 20,120,5
-    params.save_training_acc: True

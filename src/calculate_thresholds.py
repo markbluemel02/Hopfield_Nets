@@ -126,7 +126,7 @@ def generate_comparison_plot(rules, options, purpose):
     plt.xticks(fontsize=16)
     plt.yticks(fontsize=16)
     #plt.savefig(f'../imgs/Comparison_{suffix}.pdf')
-    plt.savefig(f'../imgs/simple_symmetric_{suffix}.pdf',bbox_inches='tight')
+    plt.savefig(f'../imgs/simpsym_{suffix}.pdf',bbox_inches='tight')
     plt.show()
 
     return None
@@ -202,20 +202,24 @@ if __name__ == '__main__':
              #'DescentExpBarrierSI',
              #'DescentL1',
              #'DescentL2',
-             #'GardnerKrauthMezard',
-             'Infomorphic']
+             'GardnerKrauthMezard',
+             'Infomorphic',
+             'Infomorphic'
+                ]
     options_test = [
                 {'incremental' : False, 'sc' : True }, #Hebbian
                 #{'incremental': False, 'sc': True}, #Storkey
                 #{},  #Pseudoinverse
                 #{'sc' : False, 'lr': 1e-2, 'maxiter': 200},  # Krauth-Mezard
+                #{'sc' : False, 'lr': 0.01,'k':1, 'maxiter': 100},  # Krauth-Mezard
                 #{'sc' : False,'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentExpBarrier
                 #{'sc' : True,'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentExpBarrier
                 #{'sc' : True,'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5},  # DescentExpBarrierSI
                 #{'sc' : False,'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL1
                 #{'sc' : False,'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL2
-                #{'sc' : True, 'lr' :  1e-2, 'k' : 1.0, 'maxiter' : 100},  #GardnerKrauthMezard
-                {'sc' : False, 'lr': 1e-1,  'maxiter' : 100,'goal':[0.1,0.1,1,0.1,0]} #Infomorphic
+                {'sc' : True, 'lr' :  1e-2, 'k' : 1.0, 'maxiter' : 100},  #GardnerKrauthMezard
+                {'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0.1,0.1,1,0.1,0],'symmetric':True}, #Infomorphic
+                {'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0.1,0.1,1,0.1,0],'symmetric':False} #Infomorphic
                     ]
     for i in range(len(rules_test)):
         rule = rules_test[i]

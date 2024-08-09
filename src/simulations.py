@@ -80,12 +80,12 @@ if __name__ == '__main__':
     num_neurons = 75
     num_of_flips = 37
     num_of_patterns = 75
-    num_repetitions = 1
+    num_repetitions = 4
 
 
     rules = [
             #non-incremental
-             'Hebb',
+             #'Hebb',
              #'Storkey',
              #'Pseudoinverse',
              #'KrauthMezard',
@@ -93,6 +93,7 @@ if __name__ == '__main__':
              #'DescentExpBarrierSI',
              #'DescentL1',
              #'DescentL2'
+             #'GardnerKrauthMezard',
 
             #incremental
             # 'Hebb',
@@ -114,10 +115,11 @@ if __name__ == '__main__':
             # 'DescentExpBarrierSI'
 
             # Infomorphic rule
-            #'Infomorphic'
+            'Infomorphic',
+            'Infomorphic'
     ]
     options = [# Non-incremental
-                {'incremental' : False, 'sc' : True },  #Hebbian
+                #{'incremental' : False, 'sc' : True },  #Hebbian
                 #{'incremental' : False, 'sc': True},  # Storkey
                 #{},  #Pseudoinverse
                 #{'sc' : True, 'lr': 1e-2, 'maxiter': 200},  # Krauth-Mezard
@@ -125,7 +127,7 @@ if __name__ == '__main__':
                 #{'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd': 0.5},  # DescentExpBarrierSI
                 #{'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL1
                 #{'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001}  #DescentL2
-                #{'sc' : True, 'lr' :  1e-2, 'k' : 1.0, 'maxiter' : 100} #GardnerKrauthMezard
+                #{'sc' : True, 'lr' :  1e-2, 'k' : 1.0, 'maxiter' : 100}, #GardnerKrauthMezard
                 # incremental
                 #{'incremental': True, 'sc': True},  # Hebbian
                 #{'incremental': True, 'sc': True},  # Storkey
@@ -145,7 +147,8 @@ if __name__ == '__main__':
                 # {'sc' : False, 'lr': 1e-2, 'k': 1.0, 'maxiter': 100},  # GardnerKrauthMezard
                 # {'sc' : False, 'incremental': False, 'tol': 1e-3, 'lmbd': 0.5},  # DescentExpBarrierSI #add bonds
 
-                #{'sc' : False, 'lr': 1e-1,  'maxiter' : 100,'goal':[0.1,0.1,1,0.1,0]} #Infomorphic
+                {'sc' : False, 'lr': 1e-1,  'maxiter' : 10,'goal':[0.1,0.1,1,0.1,0],'symmetric':False}, #Infomorphic
+                {'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0.1,0.1,1,0.1,0],'symmetric':True} #Infomorphic
                ]
     for i, rule in enumerate(rules):
         print(rule)

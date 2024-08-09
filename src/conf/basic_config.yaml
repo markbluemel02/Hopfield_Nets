@@ -1,47 +1,56 @@
 defaults:
   - _self_
-#  - dataset: mnist
-  - hydra: basic_sweeper 
-  - goals: redundancy
+  - hydra: basic
+  - dataset: basic
+  - goal: redundancy
   - override hydra/launcher: joblib
+
+capacity:
+  mode: False
+  interrupt: False
+  threshold: 0.95
+  start: 0.2
+  increment: 0.2
+  stop: 1.2
 
 params:
   exp_name : 'Hopfield'
   neurons: 100
+  patterns: 20
   epochs: 1000
   sequential_updates: False
-  simple_symmetric: True #symmetric learning without change to gradient
+  threshold: None #format 0.99 for 99%
+  simple_symmetric: False #symmetric learning without change to gradient
   reps: 5 #check if this changes anything
   num_workers: 0 #what option actually speeds things up?
   pref_gpu: False
   seed: 4
+  hebbian_init: False
+  hebbian_scale:  0.01
+
+storage:
+  save_training_acc: False 
+  save_model_params: False #saves info quantities
+  save_patterns: False
   min_noise: 0
   max_noise: 0.51 #exclusive
   noise_step: 0.1
   noise_level: 0 #this is for eval during training
-  save_training_acc: True 
-  save_model_params: True #saves info quantities
-  save_patterns: False
+  
   post_process: False
-  hebbian_init: False
-  hebbian_scale:  0.01
-dataset:
-  num_patterns: 20
-  num_neurons: ${params.neurons}
-  spatial: False
-  semantic: False
-  p_bernoulli: 0.5 #find a better name for this
-  batch_fraction: 1
+
 optim_params:
    name: 'torch.optim.SGD'
    params:
     lr: 0.1 #0.005 for Adam and 0.1 for SGD both seem to work
+
 binning_params:
   name: 'im_net.prob_estim.BinningAdaptiveSize'
   params:
     n_bins: [60, 60]
     edges: [[-20, 20], [-20,20]]
     use_bincenters: False
+
 layer_params:
   initializer:
     name: 'torch.nn.init.uniform_'
@@ -61,17 +70,10 @@ layer_params:
     discrete_output_values: [-1, 1]
     start_symmetric: False
     positive_external: True
-hebbian_params:
-  eval: False
-  start: 1
-  stop: 51
-  step: 1
-  layer1:
-    network_size: ${params.neurons}
-    bias: False
-  sequential_updates: False
 
 datamanager_params:
   cp_dir: 'checkpoints'
   cp_spacing: 'log' #'linear' or 'log'
   cp_number: 0
+
+
