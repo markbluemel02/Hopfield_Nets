@@ -1,9 +1,9 @@
 # @package _global_
 layer_params:
   hopfield_layer:
-    gamma: 
+    gamma: #0.1 I(Z;X,Y)+ 0.9 I(X;Y;Z)
       - 0.1
       - 0.1
-      - 1
-      - -0.9
+      - 1 
+      - -0.8
       - 0

@@ -1,0 +1,10 @@
+performance: False #acc, symmetry and norm.
+pid: False #saves pid & weights
+weights: False
+patterns: False
+require_comment: True #disable for cluster-use 
+final:
+  acc: True
+  pid: False
+  weights: False
+  post_process: False

@@ -1,6 +1,7 @@
 # comparison plot generation functions
 import pickle
 import matplotlib
+import seaborn as sns
 from copy import deepcopy
 from matplotlib import rc
 # rc('text', usetex=True)
@@ -128,14 +129,122 @@ def generate_comparison_plot(rules, options, purpose):
     #plt.savefig(f'../imgs/Comparison_{suffix}.pdf')
     plt.savefig(f'../imgs/simpsym_{suffix}.pdf',bbox_inches='tight')
     plt.show()
+    return None
 
+def custom_plot(rules, options, purpose):
+    fig = plt.figure(figsize=(7,10))
+    if purpose == 'incremental':
+        colors = ['slateblue', 'b', 'g','m', 'olive', 'k', 'purple', 'darkorange', 'darkred','r']
+    elif purpose == 'non-incremental':
+        colors = ['slateblue', 'darkred', 'k', 'm', 'g', 'r', 'purple', 'darkorange', 'b', 'salmon']
+    elif purpose == 'infomorphic':
+        colors=sns.color_palette()
+    else:
+        colors = ['r', 'g', 'b', 'k']*2
+    for i, rule in enumerate(rules):
+        arguments = options[i]
+        file_name = f'../data/flips_and_patterns_{get_postfix(rule, arguments, num_neurons, num_of_patterns, num_repetitions)}.pkl'
+        boundary_file_name = file_name.split('.pkl')[0] + '_boundary.pkl'
+        data = pickle.load(open(boundary_file_name, 'rb+'))
+        boundary = data['boundary']
+        std_err = data['std']
+
+        if rule == 'Pseudoinverse':
+            linestyle = '-'
+            color = 'k'
+            linewidth = 1.5
+        else:
+            linestyle = '-'
+            color = colors[i]
+            linewidth = 1.5
+
+        if purpose == 'sc':
+            if arguments['sc'] == True:
+                linestyle = '-'
+                color = colors[i]
+                linewidth = 1.5
+            else:
+                linestyle = '--'
+                color = colors[i]
+                linewidth = 1.5
+        label = None
+        if rule == 'Hebb':
+            color = colors[0]
+        if rule == 'Infomorphic':
+            if arguments['goal']==[0.1,0.1,1,0.1,0]:
+                label = 'Redundancy Goal'
+                color=colors[1]
+            if arguments['goal']==[1,-1,0.8,0,-1]:
+                label = 'Optimized Goal'
+                color=colors[2]
+        if rule == 'GardnerKrauthMezard':
+            k = arguments['k']
+            label = f'{rule}, k={k}'
+            color = colors[4]
+        if label is None:
+                label = rule
+        # plt.fill_between(x, y1, y2)
+        y0 = boundary #savgol_filter(boundary, 9, 3)
+        n = len(y0)
+        x = np.arange(n)
+        y1 = np.array(boundary) - 0.25*np.array(std_err) #savgol_filter(np.array(boundary) - 0.25*np.array(std_err), 9, 3)
+        y2 = np.array(boundary) + 0.25*np.array(std_err) #savgol_filter(np.array(boundary) + 0.25*np.array(std_err), 9, 3)
+
+        y0 = savgol_filter(y0, 9, 3)
+        y1 = savgol_filter(y1, 9, 3)
+        y2 = savgol_filter(y2, 9, 3)
+        if purpose == 'sc':
+            if arguments['sc'] == True:
+                plt.plot(y0, x, color=color,
+                         label=rule + ' (sc = True)', linestyle=linestyle, linewidth=linewidth, alpha=0.9)
+            else:
+                plt.plot(y0, x, color=color,
+                         label=rule + ' (sc = False)', linestyle=linestyle, linewidth=linewidth, alpha=0.9)
+        else:
+            
+            plt.plot(y0, x, color=color,
+                     label=label, linestyle=linestyle, linewidth=linewidth, alpha=0.9)
+        plt.plot(y1, x, color=color, linestyle=linestyle, linewidth=0.5, alpha=0.2)
+        plt.plot(y2, x, color=color, linestyle=linestyle, linewidth=0.5, alpha=0.2)
+        plt.fill_betweenx(x, y1, y2, color=color, alpha = 0.05)
+        plt.legend(loc='upper right', shadow=True, fontsize='x-large')
+        plt.grid(True)
+    plt.minorticks_on()
+    plt.text(0, 8, 'Overlap > 0.95', fontsize=16)
+    plt.text(17, 30, 'Overlap < 0.95', fontsize=16)
+    plt.ylabel('Number of patterns', fontsize = 16)
+    plt.xlabel('Number of flips in an initial state', fontsize = 16)
+    if purpose == 'incremental':
+        plt.title('The threshold line for overlap = 0.95 between \n the retrieved and the intended state \n (incremental rules)',
+                  fontsize = 20, y=0.996)
+        suffix = 'incremental'
+    elif purpose == 'non-incremental':
+        plt.title(
+            'The threshold line for overlap = 0.95 between \n the retrieved and the intended state \n (non-incremental rules)',
+            fontsize=20, y=0.996)
+        suffix = 'non-incremental'
+    elif purpose == 'infomorphic':
+        plt.title(
+            'The threshold line for overlap = 0.95 between \n the retrieved and the intended state, N=75 \n (Adapted from Fig.2 Tolmachev(2020) )',
+            fontsize=20, y=0.996)
+        suffix = 'Infomorphic'
+    else:
+        plt.title(
+            'The threshold line for overlap = 0.95 between \n the retrieved and the intended state \n',
+            fontsize=20, y=0.996)
+        suffix = 'sc'
+    plt.xticks(fontsize=16)
+    plt.yticks(fontsize=16)
+    #plt.savefig(f'../imgs/Comparison_{suffix}.pdf')
+    plt.savefig(f'../imgs/Comparison_{suffix}.pdf',bbox_inches='tight')
+    plt.show()
     return None
 
 if __name__ == '__main__':
     epsilon = 0.95
     num_neurons = 75
     num_of_patterns = 75
-    num_repetitions = 1
+    num_repetitions = 4
 
     # rules_incremental = ['Hebb', 'Storkey', 'KrauthMezard', 'DiederichOpperI', 'DiederichOpperII',
     #          'DescentExpBarrier', 'DescentExpBarrierSI',
@@ -203,6 +312,7 @@ if __name__ == '__main__':
              #'DescentL1',
              #'DescentL2',
              'GardnerKrauthMezard',
+             #'Infomorphic',
              'Infomorphic',
              'Infomorphic'
                 ]
@@ -218,14 +328,15 @@ if __name__ == '__main__':
                 #{'sc' : False,'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL1
                 #{'sc' : False,'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL2
                 {'sc' : True, 'lr' :  1e-2, 'k' : 1.0, 'maxiter' : 100},  #GardnerKrauthMezard
-                {'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0.1,0.1,1,0.1,0],'symmetric':True}, #Infomorphic
-                {'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0.1,0.1,1,0.1,0],'symmetric':False} #Infomorphic
+                #{'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0.1,0.1,1,0.1,0],'symmetric':True}, #Infomorphic
+                {'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0.1,0.1,1,0.1,0],'symmetric':False}, #Infomorphic
+                {'sc' : False, 'lr': 1e-1,  'maxiter' : 5000,'reps' : 5,'goal':[1,-1,0.8,0,-1],'symmetric':False} #Infomorphic
                     ]
     for i in range(len(rules_test)):
         rule = rules_test[i]
         arguments = options_test[i]
         file_name = f'../data/flips_and_patterns_{get_postfix(rule, arguments, num_neurons, num_of_patterns, num_repetitions)}.pkl'
         get_bound(file_name, epsilon)
-    generate_comparison_plot(rules_test, options_test, 'non-incremental')
+    custom_plot(rules_test, options_test, 'infomorphic')
 
 

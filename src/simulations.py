@@ -115,7 +115,7 @@ if __name__ == '__main__':
             # 'DescentExpBarrierSI'
 
             # Infomorphic rule
-            'Infomorphic',
+            #'Infomorphic',
             'Infomorphic'
     ]
     options = [# Non-incremental
@@ -147,8 +147,8 @@ if __name__ == '__main__':
                 # {'sc' : False, 'lr': 1e-2, 'k': 1.0, 'maxiter': 100},  # GardnerKrauthMezard
                 # {'sc' : False, 'incremental': False, 'tol': 1e-3, 'lmbd': 0.5},  # DescentExpBarrierSI #add bonds
 
-                {'sc' : False, 'lr': 1e-1,  'maxiter' : 10,'goal':[0.1,0.1,1,0.1,0],'symmetric':False}, #Infomorphic
-                {'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0.1,0.1,1,0.1,0],'symmetric':True} #Infomorphic
+                {'sc' : False, 'lr': 1e-1,  'maxiter' : 5000,'reps':5,'goal':[1,-1,0.8,0,-1],'symmetric':False}, #Infomorphic
+                #{'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0.1,0.1,1,0.1,0],'symmetric':True} #Infomorphic
                ]
     for i, rule in enumerate(rules):
         print(rule)

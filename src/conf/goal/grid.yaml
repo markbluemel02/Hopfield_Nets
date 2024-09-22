@@ -1,0 +1,25 @@
+# @package _global_
+hydra:
+  sweeper:
+    params:
+      g.r: choice(-1,0,1)
+      g.c: choice(-1,0,1)
+      g.red: choice(-1,0,1)
+      g.syn: choice(-1,0,1)
+      g.h_res: choice(-1,0,1)
+
+g:
+  r: ??
+  c: ??
+  red: ??
+  syn: ??
+  h_res: ??
+
+layer_params:
+  hopfield_layer:
+    gamma:
+      - ${g.r} # {1}
+      - ${g.c} # {2}
+      - ${g.red} # {1}{2}
+      - ${g.syn} # {12}
+      - ${g.h_res} # h_res

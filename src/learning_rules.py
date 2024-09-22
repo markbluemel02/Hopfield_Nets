@@ -492,14 +492,16 @@ def Gardner_Krauth_Mezard(N, patterns, weights, biases, sc, lr, k, maxiter):
             print('Maximum number of iterations has been exceeded')
     return weights, biases
 
-def infomorphic_lr(N, patterns, weights, biases,sc,lr,maxiter, goal,symmetric=True):
+def infomorphic_lr(N, patterns, weights, biases,sc,lr,maxiter,reps, goal,symmetric=True):
     with initialize(version_base=None, config_path="conf", job_name="test_app"):
         cfg = compose(config_name="basic_config", overrides=[f"params.neurons={N}",
                                                         f"params.epochs={maxiter}",
+                                                        f"params.reps={reps}",
                                                         f"optim_params.params.lr={lr}",
                                                         f"layer_params.hopfield_layer.gamma={goal}",
                                                         f"params.simple_symmetric={symmetric}"]
                                                         )
+        internal_epochs = maxiter//reps
     #prepare torch
     device=hf.get_device(cfg.params.pref_gpu)
     #--prepare the model--
@@ -515,7 +517,7 @@ def infomorphic_lr(N, patterns, weights, biases,sc,lr,maxiter, goal,symmetric=Tr
     dataset=hf.CustomDataset(torch.from_numpy(Z).float())
     batch_size=N
     trainloader = torch.utils.data.DataLoader(dataset,batch_size,True,num_workers=cfg.params.num_workers)
-    training.fixed_learning(cfg.params.epochs,model,device,optimizer,trainloader,cfg)
+    training.fixed_learning(internal_epochs,model,device,optimizer,trainloader,cfg.params,cfg.storage)
     weights=model.hopfield_layer.sources[1].weight.detach().numpy()
     return weights, biases
 

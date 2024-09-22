@@ -35,7 +35,6 @@ sweeper:
   params: ???
 
 capacity:
-  mode: True
   interrupt: True
   threshold: 0.95
   start: 0.9
