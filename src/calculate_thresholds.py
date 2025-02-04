@@ -131,16 +131,9 @@ def generate_comparison_plot(rules, options, purpose):
     plt.show()
     return None
 
-def custom_plot(rules, options, purpose):
-    fig = plt.figure(figsize=(7,10))
-    if purpose == 'incremental':
-        colors = ['slateblue', 'b', 'g','m', 'olive', 'k', 'purple', 'darkorange', 'darkred','r']
-    elif purpose == 'non-incremental':
-        colors = ['slateblue', 'darkred', 'k', 'm', 'g', 'r', 'purple', 'darkorange', 'b', 'salmon']
-    elif purpose == 'infomorphic':
-        colors=sns.color_palette()
-    else:
-        colors = ['r', 'g', 'b', 'k']*2
+def custom_plot(rules, options, purpose, title=None):
+    fig = plt.figure(figsize=(8,5))
+    colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
     for i, rule in enumerate(rules):
         arguments = options[i]
         file_name = f'../data/flips_and_patterns_{get_postfix(rule, arguments, num_neurons, num_of_patterns, num_repetitions)}.pkl'
@@ -168,19 +161,17 @@ def custom_plot(rules, options, purpose):
                 color = colors[i]
                 linewidth = 1.5
         label = None
-        if rule == 'Hebb':
-            color = colors[0]
         if rule == 'Infomorphic':
             if arguments['goal']==[0.1,0.1,1,0.1,0]:
                 label = 'Redundancy Goal'
-                color=colors[1]
             if arguments['goal']==[1,-1,0.8,0,-1]:
                 label = 'Optimized Goal'
-                color=colors[2]
         if rule == 'GardnerKrauthMezard':
             k = arguments['k']
             label = f'{rule}, k={k}'
-            color = colors[4]
+        if rule == 'DescentL2':
+            k = 1/arguments['lmbd']
+            label = f'{rule}, k={k}'
         if label is None:
                 label = rule
         # plt.fill_between(x, y1, y2)
@@ -202,18 +193,18 @@ def custom_plot(rules, options, purpose):
                          label=rule + ' (sc = False)', linestyle=linestyle, linewidth=linewidth, alpha=0.9)
         else:
             
-            plt.plot(y0, x, color=color,
+            plt.plot(x, y0, color=color,
                      label=label, linestyle=linestyle, linewidth=linewidth, alpha=0.9)
-        plt.plot(y1, x, color=color, linestyle=linestyle, linewidth=0.5, alpha=0.2)
-        plt.plot(y2, x, color=color, linestyle=linestyle, linewidth=0.5, alpha=0.2)
-        plt.fill_betweenx(x, y1, y2, color=color, alpha = 0.05)
+        plt.plot(x, y1, color=color, linestyle=linestyle, linewidth=0.5, alpha=0.2)
+        plt.plot(x, y1, color=color, linestyle=linestyle, linewidth=0.5, alpha=0.2)
+        plt.fill_between(x, y1, y2, color=color, alpha = 0.05)
         plt.legend(loc='upper right', shadow=True, fontsize='x-large')
         plt.grid(True)
     plt.minorticks_on()
-    plt.text(0, 8, 'Overlap > 0.95', fontsize=16)
-    plt.text(17, 30, 'Overlap < 0.95', fontsize=16)
-    plt.ylabel('Number of patterns', fontsize = 16)
-    plt.xlabel('Number of flips in an initial state', fontsize = 16)
+    #plt.text(0, 8, 'Overlap > 0.95', fontsize=16)
+    #plt.text(17, 30, 'Overlap < 0.95', fontsize=16)
+    plt.xlabel('Number of patterns', fontsize = 16)
+    plt.ylabel('Number of flips in an initial state', fontsize = 16)
     if purpose == 'incremental':
         plt.title('The threshold line for overlap = 0.95 between \n the retrieved and the intended state \n (incremental rules)',
                   fontsize = 20, y=0.996)
@@ -235,6 +226,8 @@ def custom_plot(rules, options, purpose):
         suffix = 'sc'
     plt.xticks(fontsize=16)
     plt.yticks(fontsize=16)
+    if title is not None:
+        suffix=title
     #plt.savefig(f'../imgs/Comparison_{suffix}.pdf')
     plt.savefig(f'../imgs/Comparison_{suffix}.pdf',bbox_inches='tight')
     plt.show()
@@ -242,8 +235,8 @@ def custom_plot(rules, options, purpose):
 
 if __name__ == '__main__':
     epsilon = 0.95
-    num_neurons = 75
-    num_of_patterns = 75
+    num_neurons = 100
+    num_of_patterns = 100
     num_repetitions = 4
 
     # rules_incremental = ['Hebb', 'Storkey', 'KrauthMezard', 'DiederichOpperI', 'DiederichOpperII',
@@ -302,7 +295,7 @@ if __name__ == '__main__':
     #            #{'sc': False, 'lr': 1e-2, 'k': 1.0, 'maxiter': 100},  # GardnerKrauthMezard
     #            ]
     rules_test = [
-             'Hebb',
+             #'Hebb',
              #'Storkey',
              #'Pseudoinverse',
              #'KrauthMezard',
@@ -310,14 +303,17 @@ if __name__ == '__main__':
              #'DescentExpBarrier',
              #'DescentExpBarrierSI',
              #'DescentL1',
-             #'DescentL2',
-             'GardnerKrauthMezard',
              #'Infomorphic',
-             'Infomorphic',
-             'Infomorphic'
+             #'Infomorphic',
+             'DescentL2',
+             'DescentL2',
+             'DescentL2',
+             'logistic'
+             #'Infomorphic',
+             #'Infomorphic',
                 ]
     options_test = [
-                {'incremental' : False, 'sc' : True }, #Hebbian
+                #{'incremental' : False, 'sc' : True }, #Hebbian
                 #{'incremental': False, 'sc': True}, #Storkey
                 #{},  #Pseudoinverse
                 #{'sc' : False, 'lr': 1e-2, 'maxiter': 200},  # Krauth-Mezard
@@ -326,17 +322,21 @@ if __name__ == '__main__':
                 #{'sc' : True,'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentExpBarrier
                 #{'sc' : True,'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5},  # DescentExpBarrierSI
                 #{'sc' : False,'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL1
-                #{'sc' : False,'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL2
-                {'sc' : True, 'lr' :  1e-2, 'k' : 1.0, 'maxiter' : 100},  #GardnerKrauthMezard
-                #{'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0.1,0.1,1,0.1,0],'symmetric':True}, #Infomorphic
-                {'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0.1,0.1,1,0.1,0],'symmetric':False}, #Infomorphic
-                {'sc' : False, 'lr': 1e-1,  'maxiter' : 5000,'reps' : 5,'goal':[1,-1,0.8,0,-1],'symmetric':False} #Infomorphic
+                #{'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0,0,1,0,-1],'symmetric':False}, #Infomorphic
+                #{'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0,0,-1,0,1],'symmetric':False}, #Infomorphic
+                {'sc' : False, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL2
+                {'sc' : False, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 1, 'alpha' : 0.001},  #DescentL2
+                {'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL2
+                #{'sc' : True, 'lr' :  1e-2, 'k' : 1.0, 'maxiter' : 100} , #GardnerKrauthMezard
+                {'sc' : False, 'lr': 1e-2, 'tol': 1e-1}  # logistic
+                #{'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0.1,0.1,1,0.1,0],'symmetric':False}, #Infomorphic
+                #{'sc' : False, 'lr': 1e-1,  'maxiter' : 5000,'reps' : 5,'goal':[1,-1,0.8,0,-1],'symmetric':False} #Infomorphic
                     ]
     for i in range(len(rules_test)):
         rule = rules_test[i]
         arguments = options_test[i]
         file_name = f'../data/flips_and_patterns_{get_postfix(rule, arguments, num_neurons, num_of_patterns, num_repetitions)}.pkl'
         get_bound(file_name, epsilon)
-    custom_plot(rules_test, options_test, 'infomorphic')
+    custom_plot(rules_test, options_test, 'non_incremental','logistic')
 
 

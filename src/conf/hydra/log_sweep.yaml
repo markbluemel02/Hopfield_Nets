@@ -6,6 +6,7 @@ sweep:
 #job:
 #  env_set:
 #    CUDA_VISIBLE_DEVICES: 3 # If working on a GPU machine with multiple users, it is recommended to set the GPU device to reduce the risk of conflicts
+
 launcher:
   _target_: hydra_plugins.hydra_joblib_launcher.joblib_launcher.JoblibLauncher
   n_jobs: 1
@@ -14,4 +15,6 @@ launcher:
   #     num_cpus: 5 # The number of CPUs corresponds to the number of workers
 sweeper:
   params:
+    params.patterns: "choice(${log_space:${start},${stop},${points}})"
+    
     

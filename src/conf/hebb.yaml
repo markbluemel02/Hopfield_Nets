@@ -13,14 +13,15 @@ params:
   num_workers: 0 #what option actually speeds things up?
   seed: 4
   start: 1
-  stop: 141
+  stop: 151
   step: 1
 
 hebbian_params:
+  sequential: False
+  max_iterations: ${params.neurons}
   layer1:
     network_size: ${params.neurons}
     bias: False
-  sequential_updates: False
 
 datamanager_params:
   save_model: False

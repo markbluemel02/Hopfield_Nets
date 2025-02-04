@@ -2,11 +2,11 @@
 hydra:
   sweeper:
     params:
-      g.r: choice(-1,0,1)
-      g.c: choice(-1,0,1)
-      g.red: choice(-1,0,1)
-      g.syn: choice(-1,0,1)
-      g.h_res: choice(-1,0,1)
+      g.r: choice(-1,-0.5,0,0.5,1)
+      g.c: choice(-1,-0.5,0,0.5,1)
+      g.red: choice(-1,-0.5,0,0.5,1)
+      g.syn: choice(-1,-0.5,0,0.5,1)
+      g.h_res: choice(-1,-0.5,0,0.5,1)
 
 g:
   r: ??
@@ -15,8 +15,8 @@ g:
   syn: ??
   h_res: ??
 
-layer_params:
-  hopfield_layer:
+model:
+  layer1:
     gamma:
       - ${g.r} # {1}
       - ${g.c} # {2}

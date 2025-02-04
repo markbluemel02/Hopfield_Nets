@@ -1,4 +1,5 @@
 defaults:
+  - override /storage@_global_.storage: cluster
   - override sweeper: optuna
   - override sweeper/sampler: cmaes
 
@@ -33,6 +34,4 @@ sweeper:
   storage: "sqlite:///${oc.env:ALTEXPDIR, experiments}/optuna_results.sqlite3" # 
   study_name:  test3 # Name of the study. If there are multiple studies in the same database, the study name must be unique. Otherwise, the existing study will be resumed.
   params: 
-    storage.save_performance: False
-    storage.save_model_params: False
-    storage.require_comment: False
+    

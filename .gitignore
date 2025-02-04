@@ -1,6 +1,6 @@
 
 src/experiments_continuous_states.py
-
+*.pyc
 *.pkl
 
 imgs/imgs_old/

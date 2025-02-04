@@ -15,8 +15,8 @@ g:
   syn: ??
   h_res: ??
 
-layer_params:
-  hopfield_layer:
+model:
+  layer1:
     gamma:
       - ${g.r} # {1}
       - ${g.c} # {2}

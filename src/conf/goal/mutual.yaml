@@ -2,7 +2,7 @@
 model:
   layer1:
     gamma: 
-      - 0
+      - 1
       - 0
       - 1
       - 0

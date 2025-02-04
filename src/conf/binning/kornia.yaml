@@ -1,0 +1,5 @@
+name: 'im_net.prob_estim.BinningKornia'
+params:
+  sigma: 1
+  n_bins: 60
+  edges: [-20,20]

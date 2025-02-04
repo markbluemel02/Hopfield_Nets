@@ -1,60 +1,31 @@
 defaults:
   - _self_
-  - hydra: basic
-  - dataset: basic
+  - binning: adaptive
   - storage: basic
-  - goal: redundancy
+  - dataset: basic
+  - model: IMHopfield
+  - hydra: basic
+  - goal: redundancy #must happen after model
   - override hydra/launcher: joblib
 
 params:
   exp_name : 'Infomorphic'
-  neurons: 100
-  patterns: 20
-  epochs: 100
-  sequential_updates: False # MEMORY LEAK, use at your own risk! maybe use gc at the end of runs?
-  threshold: ??? #format 0.99 for 99%
-  normalization: ??? #if present will re-normalize weights each epoch
-  simple_symmetric: False #symmetrize weights each epoch
-  noisy_transmission: False #if True, states will not be set directly
-  reps: 1 #higher values will lead to speed-up, especially by saving less data
   pref_gpu: True
   num_workers: 0 #only zero works, dataset is loaded onto gpu directly
   seed: 4
-  hebbian_init: False
-  hebbian_scale:  0.01
+  neurons: 100
+  patterns: 20
+  epochs: 100
+  reps: 1 #higher values will lead to speed-up, especially by storing less data REPLACED BY (correlated) noise in internal inputs
+  simple_symmetric: False #symmetrize weights each epoch
+  noisy_transmission: False #if True, states will not be set directly
+  normalization: null #opt.
+  threshold: null #opt.
 
 optim_params:
    name: 'torch.optim.SGD'
    params:
     lr: 0.1 #0.005 for Adam and 0.1 for SGD both seem to work
-
-binning_params:
-  name: 'im_net.prob_estim.BinningAdaptiveSize'
-  params:
-    n_bins: [60, 60]
-    edges: [[-20, 20], [-20,20]]
-    use_bincenters: False
-
-layer_params:
-  # initializer: #not actually implemented
-  #   name: 'torch.nn.init.uniform_'
-  #   params:
-  #     a: -1.0 # lower limit
-  #     b: 1.0 # upper limit
-  hopfield_layer:
-    biases: 
-      - False
-      - False
-    input_sizes: 
-      - ${params.neurons}
-      - ${params.neurons}
-    output_size: ${params.neurons}
-    gamma: ??
-    activation: 'im_net.activation_functions.SumActivation'
-    discrete_output_values: [-1, 1]
-    freeze_external: False
-    start_symmetric: False
-    positive_external: True
 
 datamanager_params:
   save_model: False

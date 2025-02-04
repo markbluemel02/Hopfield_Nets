@@ -1,6 +1,6 @@
 # @package _global_
-layer_params:
-  hopfield_layer:
+model:
+  layer1:
     gamma: 
       - 1
       - -1

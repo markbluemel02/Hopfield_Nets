@@ -1,0 +1,5 @@
+name: 'im_net.prob_estim.BinningFixedSize'
+params:
+  n_bins: [60, 60]
+  edges: [[-20, 20], [-20,20]]
+  use_bincenters: False

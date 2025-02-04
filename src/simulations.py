@@ -77,10 +77,10 @@ def weights_distribution_plot(num_neurons, num_of_patterns, params):
 
 if __name__ == '__main__':
     # run simulations
-    num_neurons = 75
-    num_of_flips = 37
-    num_of_patterns = 75
-    num_repetitions = 4
+    num_neurons = 100
+    num_of_flips = 50
+    num_of_patterns = 100
+    num_repetitions = 1
 
 
     rules = [
@@ -92,9 +92,8 @@ if __name__ == '__main__':
              #'DescentExpBarrier',
              #'DescentExpBarrierSI',
              #'DescentL1',
-             #'DescentL2'
+             #'DescentL2',
              #'GardnerKrauthMezard',
-
             #incremental
             # 'Hebb',
             # 'Storkey',
@@ -103,7 +102,8 @@ if __name__ == '__main__':
             # 'DescentExpBarrier',
             # 'DescentExpBarrierSI',
             # 'DescentL1',
-            # 'DescentL2',
+            #'DescentL2',
+            #'DescentL2',
             # 'GardnerKrauthMezard',
 
             # for sc effects
@@ -115,8 +115,9 @@ if __name__ == '__main__':
             # 'DescentExpBarrierSI'
 
             # Infomorphic rule
-            #'Infomorphic',
-            'Infomorphic'
+            #'logistic'
+            'Infomorphic',
+            #'Infomorphic'
     ]
     options = [# Non-incremental
                 #{'incremental' : False, 'sc' : True },  #Hebbian
@@ -126,10 +127,12 @@ if __name__ == '__main__':
                 #{'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentExpBarrier
                 #{'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd': 0.5},  # DescentExpBarrierSI
                 #{'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL1
-                #{'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001}  #DescentL2
-                #{'sc' : True, 'lr' :  1e-2, 'k' : 1.0, 'maxiter' : 100}, #GardnerKrauthMezard
+                #{'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL2
+                #{'sc' : False, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 1, 'alpha' : 0.001},  #DescentL2
+                #{'sc' : False, 'lr' :  1e-2, 'k' : 5.0, 'maxiter' : 100}, #GardnerKrauthMezard
+
                 # incremental
-                #{'incremental': True, 'sc': True},  # Hebbian
+                #{'incremental': True, 'sc': False},  # Hebbian
                 #{'incremental': True, 'sc': True},  # Storkey
                 #{'sc' : True, 'lr': 1e-2},  # DOI
                 #{'sc' : True, 'lr': 1e-2, 'tol': 1e-1},  # DOII
@@ -146,9 +149,9 @@ if __name__ == '__main__':
                 # {'sc' : False, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL1
                 # {'sc' : False, 'lr': 1e-2, 'k': 1.0, 'maxiter': 100},  # GardnerKrauthMezard
                 # {'sc' : False, 'incremental': False, 'tol': 1e-3, 'lmbd': 0.5},  # DescentExpBarrierSI #add bonds
-
-                {'sc' : False, 'lr': 1e-1,  'maxiter' : 5000,'reps':5,'goal':[1,-1,0.8,0,-1],'symmetric':False}, #Infomorphic
-                #{'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0.1,0.1,1,0.1,0],'symmetric':True} #Infomorphic
+                #{'sc' : False, 'lr': 1e-2, 'tol': 1e-1},  # logistic
+                {'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0,0,1,0,0],'symmetric':False}, #Infomorphic
+                #{'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0,0,-1,0,1],'symmetric':False} #Infomorphic
                ]
     for i, rule in enumerate(rules):
         print(rule)

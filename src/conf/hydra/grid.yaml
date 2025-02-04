@@ -1,11 +1,11 @@
-# @package _global_
-
 defaults:
-  - /mods/training: capacity
-  #- override /storage: cluster
-  #- override /goal: grid
+  - /mods/capacity: basic
+  - override /goal@_global_.goal: grid 
+  - override /storage@_global_.storage: cluster
   - override sweeper: optuna
   - override sweeper/sampler: grid
+
+  
 
 run:
   dir: ${oc.env:ALTEXPDIR, experiments}/optuna_runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
@@ -20,11 +20,10 @@ sweeper:
   sampler:
     _target_: optuna.samplers.GridSampler
   _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
+  n_trials: 3125 #5^5
   n_jobs: 4
   storage: "sqlite:///${oc.env:ALTEXPDIR, experiments}/test_results.sqlite3" # 
   study_name:  grid # Name of the study. If there are multiple studies in the same database, the study name must be unique. Otherwise, the existing study will be resumed.
   params: 
-    #capacity.interrupt: True
-    storage.save_performance: False
-    storage.save_model_params: False
-    storage.require_comment: False
+    capacity.interrupt: True
+    

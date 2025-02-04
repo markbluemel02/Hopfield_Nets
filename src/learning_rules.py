@@ -15,10 +15,11 @@ from hydra import compose, initialize
 from omegaconf import OmegaConf
 #add Infomorphic to sys_path:
 import sys
-sys.path.insert(0, '/home/mbluemel/Repo/infomorph_networks/src')
+sys.path.insert(0, '/home/mbluemel/Repos/infomorph_networks/src')
 import hopfield
 import training
 from im_net import helper_functions as hf
+from im_net import datasets
 
 def hebbian_lr(N, patterns, weights, biases, sc, incremental):
     '''
@@ -396,6 +397,28 @@ def DiederichOpper_II(N, patterns, weights, biases, sc, lr, tol):
                 h_i = (weights[i, :] @ pattern.T + biases[i])
     return weights, biases
 
+def logistic(N, patterns, weights, biases, sc, lr, tol):
+    '''
+    performs logistic regression on a KL-divergence-loss
+    '''
+    for i in range(N):  # for each neuron independently
+        for j in range(patterns.shape[0]):
+            pattern = np.array(deepcopy(patterns[j].reshape(1, N))).squeeze()
+            h_i = (weights[i, :] @ pattern.T + biases[i])
+            p_fire = 1/(1+np.exp(-h_i))
+            p_target = (1 + pattern[i])/2
+            # if the  new pattern is not already stable with margin 1
+            while (np.abs(p_target - p_fire)) > tol:
+                #delta_w = lr * 
+                weights[i, :] = deepcopy(weights[i, :] + lr  * pattern * (p_target - p_fire)) # not yet ready to use!
+                biases[i] = deepcopy(biases[i] + lr * pattern[i]* (p_target - p_fire))
+                if sc == False:
+                    weights[i, i] = 0
+                #update fields
+                h_i = (weights[i, :] @ pattern.T + biases[i])
+                p_fire = 1/(1+np.exp(-h_i))
+    return weights, biases
+
 
 def Krauth_Mezard(N, patterns, weights, biases, sc, lr, maxiter):
     '''
@@ -492,32 +515,30 @@ def Gardner_Krauth_Mezard(N, patterns, weights, biases, sc, lr, k, maxiter):
             print('Maximum number of iterations has been exceeded')
     return weights, biases
 
-def infomorphic_lr(N, patterns, weights, biases,sc,lr,maxiter,reps, goal,symmetric=True):
+def infomorphic_lr(N, patterns, weights, biases,sc,lr,maxiter, goal,symmetric=True):
     with initialize(version_base=None, config_path="conf", job_name="test_app"):
         cfg = compose(config_name="basic_config", overrides=[f"params.neurons={N}",
                                                         f"params.epochs={maxiter}",
-                                                        f"params.reps={reps}",
                                                         f"optim_params.params.lr={lr}",
-                                                        f"layer_params.hopfield_layer.gamma={goal}",
-                                                        f"params.simple_symmetric={symmetric}"]
+                                                        f"model.layer1.gamma={goal}",
+                                                        f"params.simple_symmetric={symmetric}",
+                                                        f'storage=minimal'] #don't save useless data
                                                         )
-        internal_epochs = maxiter//reps
     #prepare torch
     device=hf.get_device(cfg.params.pref_gpu)
     #--prepare the model--
-    binning_cls = hf.load_module(cfg.binning_params.name)
-    binning_method = binning_cls(device, **cfg.binning_params.params)
-    model = hopfield.IMHopfield(cfg.layer_params,binning_method).to(device)
+    binning_cls = hf.load_module(cfg.binning.name)
+    binning_method = binning_cls(device, **cfg.binning.params)
+    model = hopfield.IMHopfield(cfg.model,binning_method).to(device)
     optimizer = hf.load_module(cfg.optim_params.name)(model.parameters(), **cfg.optim_params.params)
     with torch.no_grad():
-        model.hopfield_layer.sources[1].weight[:,:]=torch.from_numpy(weights)[:,:]
-    W0=model.hopfield_layer.sources[1].weight.detach().numpy()
+        model.weights[:,:]=torch.from_numpy(weights)[:,:]
     #prepare train_loader
     Z = deepcopy(patterns)
-    dataset=hf.CustomDataset(torch.from_numpy(Z).float())
+    dataset = datasets.CustomDataset(torch.from_numpy(Z).float())
     batch_size=N
     trainloader = torch.utils.data.DataLoader(dataset,batch_size,True,num_workers=cfg.params.num_workers)
-    training.fixed_learning(internal_epochs,model,device,optimizer,trainloader,cfg.params,cfg.storage)
-    weights=model.hopfield_layer.sources[1].weight.detach().numpy()
+    training.fixed_learning(maxiter,model,device,optimizer,trainloader,cfg.params,cfg.storage)
+    weights=model.layer1.sources[1].weight.detach().numpy()
     return weights, biases
 

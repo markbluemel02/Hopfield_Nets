@@ -62,6 +62,8 @@ class Hopfield_network():
             self.weights, self.biases = DiederichOpper_I(self.num_neurons, patterns, self.weights, self.biases, **options)
         elif rule == 'DiederichOpperII':
             self.weights, self.biases = DiederichOpper_II(self.num_neurons, patterns, self.weights, self.biases, **options)
+        elif rule == 'logistic':
+            self.weights, self.biases = logistic(self.num_neurons, patterns, self.weights, self.biases, **options)
         elif rule == 'KrauthMezard':
             self.weights, self.biases = Krauth_Mezard(self.num_neurons, patterns, self.weights, self.biases, **options)
         elif rule == 'GardnerKrauthMezard':

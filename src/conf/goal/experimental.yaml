@@ -1,7 +1,8 @@
 # @package _global_
+
 #2 Y(ext) - Y(int) - H_res
-layer_params:
-  hopfield_layer:
+model:
+  layer1:
     gamma: 
       - 2
       - -1

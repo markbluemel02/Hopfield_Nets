@@ -1,4 +1,5 @@
 performance: False #acc, symmetry and norm.
+properties: False
 pid: False #saves pid & weights
 weights: False
 patterns: False
@@ -8,3 +9,8 @@ final:
   pid: False
   weights: False
   post_process: False
+  noise_fraction: null #o.
+fixed_test:
+  deterministic: False
+  iterations: 20 #legacy from Marcel
+full_model: False
