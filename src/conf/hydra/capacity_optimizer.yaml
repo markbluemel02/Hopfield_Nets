@@ -34,9 +34,3 @@ sweeper:
   study_name:  capacity # Name of the study. If there are multiple studies in the same database, the study name must be unique. Otherwise, the existing study will be resumed.
   params: ???
 
-capacity:
-  interrupt: True
-  threshold: 0.95
-  start: 0.9
-  increment: 0.05
-  stop: 1.4

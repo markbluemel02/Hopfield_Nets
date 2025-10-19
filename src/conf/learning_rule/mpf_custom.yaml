@@ -1,0 +1,4 @@
+name: 'mpf_custom'
+epochs: 100
+bias: False
+sc: False

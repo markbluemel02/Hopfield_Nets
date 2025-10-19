@@ -1,7 +1,6 @@
 name: 'im_net.prob_estim.BinningAdaptiveSize'
 params:
-  n_bins: [4, 20]
+  n_bins: [2, 60]
   edges: [[-20, 20], [-20,20]]
-  use_bincenters: False
   normalize: True
-  symmetric: True
+  # symmetric: True

@@ -1,9 +1,14 @@
+defaults:
+  - testing: basic
+
 performance: False #acc, symmetry and norm.
 properties: False
 pid: False
+grads: False
 weights: False
-patterns: True
+patterns: False
 require_comment: False #disable for cluster-use 
+progress_bars: False #disable for cluster_use
 final:
   acc: True
   pid: True 

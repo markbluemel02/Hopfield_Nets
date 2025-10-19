@@ -1,9 +1,9 @@
 defaults:
   - _self_
-  - binning: adaptive
+  - binning: marginal
   - storage: basic
   - dataset: basic
-  - model: IMHopfield
+  - model: basic
   - hydra: basic
   - goal: redundancy #must happen after model
   - override hydra/launcher: joblib
@@ -14,18 +14,22 @@ params:
   num_workers: 0 #only zero works, dataset is loaded onto gpu directly
   seed: 4
   neurons: 100
-  patterns: 20
+  alpha: 0.2
+  patterns: ${int:${eval:'${params.neurons} * ${params.alpha}'}}
   epochs: 100
-  reps: 1 #higher values will lead to speed-up, especially by storing less data REPLACED BY (correlated) noise in internal inputs
-  simple_symmetric: False #symmetrize weights each epoch
+  reps: 0 #REPLACED BY (correlated) noise in internal inputs
+  simple_symmetric: False 
   noisy_transmission: False #if True, states will not be set directly
   normalization: null #opt.
-  threshold: null #opt.
+  threshold: null #for threshold_learning
+  dtype: float #set double for float64
 
 optim_params:
-   name: 'torch.optim.SGD'
+   name: 'torch.optim.Adam'
    params:
-    lr: 0.1 #0.005 for Adam and 0.1 for SGD both seem to work
+    lr: 0.05 #0.05 by default
+
+
 
 datamanager_params:
   save_model: False

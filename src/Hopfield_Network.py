@@ -72,6 +72,8 @@ class Hopfield_network():
             self.weights, self.biases = Gardner(self.num_neurons, patterns, self.weights, self.biases, **options)
         elif rule == 'Infomorphic':
             self.weights, self.biases = infomorphic_lr(self.num_neurons, patterns, self.weights, self.biases, **options)
+        elif rule == 'MPF':
+            self.weights, self.biases = mpf_rule(self.num_neurons, patterns, self.weights, self.biases, **options)
         else:
             raise ValueError('the specified learning rule is not implemented')
         return None

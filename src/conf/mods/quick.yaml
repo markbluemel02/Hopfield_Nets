@@ -7,5 +7,8 @@ params:
   neurons: 25
   patterns: 25
   epochs: 300
-  reps: 5
+  reps: 1
   pref_gpu: True
+binning:
+  params:
+    n_bins: [2,60]

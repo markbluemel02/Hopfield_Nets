@@ -16,8 +16,7 @@ from omegaconf import OmegaConf
 #add Infomorphic to sys_path:
 import sys
 sys.path.insert(0, '/home/mbluemel/Repos/infomorph_networks/src')
-import hopfield
-import training
+import hopfield, training, mpf
 from im_net import helper_functions as hf
 from im_net import datasets
 
@@ -515,13 +514,14 @@ def Gardner_Krauth_Mezard(N, patterns, weights, biases, sc, lr, k, maxiter):
             print('Maximum number of iterations has been exceeded')
     return weights, biases
 
-def infomorphic_lr(N, patterns, weights, biases,sc,lr,maxiter, goal,symmetric=True):
+def infomorphic_lr(N, patterns, weights, biases,sc,lr,maxiter, goal,symmetric=False,reps=0):
     with initialize(version_base=None, config_path="conf", job_name="test_app"):
         cfg = compose(config_name="basic_config", overrides=[f"params.neurons={N}",
                                                         f"params.epochs={maxiter}",
                                                         f"optim_params.params.lr={lr}",
                                                         f"model.layer1.gamma={goal}",
                                                         f"params.simple_symmetric={symmetric}",
+                                                        f'params.reps={1}',
                                                         f'storage=minimal'] #don't save useless data
                                                         )
     #prepare torch
@@ -540,5 +540,12 @@ def infomorphic_lr(N, patterns, weights, biases,sc,lr,maxiter, goal,symmetric=Tr
     trainloader = torch.utils.data.DataLoader(dataset,batch_size,True,num_workers=cfg.params.num_workers)
     training.fixed_learning(maxiter,model,device,optimizer,trainloader,cfg.params,cfg.storage)
     weights=model.layer1.sources[1].weight.detach().numpy()
+    return weights, biases
+
+def mpf_rule(N, patterns, weights, biases,sc,lr,maxiter):
+    """
+    Sc will always be disabled natively.
+    """
+    weights, biases = mpf.binary_mpf(patterns,lr,maxiter,weights, biases)
     return weights, biases
 

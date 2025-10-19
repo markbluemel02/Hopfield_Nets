@@ -1,0 +1,4 @@
+name: 'regression'
+epochs: 10
+bias: False
+sc: False

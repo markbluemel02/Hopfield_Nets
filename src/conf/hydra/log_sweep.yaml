@@ -16,5 +16,7 @@ launcher:
 sweeper:
   params:
     params.patterns: "choice(${log_space:${start},${stop},${points}})"
+
+# requires user to append the variables start stop points through command line
     
     

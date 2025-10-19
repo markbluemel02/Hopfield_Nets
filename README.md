@@ -1,8 +1,11 @@
 # Hopfield_Nets
-This is an implementation of Hopfield network
+This is a fork of the repo https://github.com/ptolmachev/Hopfield_Nets from the paper Tolmachev and Manton (2020). See also the arxiv paper (https://arxiv.org/abs/2010.01472).
 
-for some introduction into the topic go to:
-https://github.com/ptolmachev/Hopfield_Nets/blob/master/src/Hopfield%20networks%20tutorial.ipynb
+# Changes
+We added the infomorphic Hopfield networks to the implemented learning_rules. There are also some changes to the testing and plotting functions. In addition, an implementation of Minimum Probability flow (MPF, see https://arxiv.org/abs/1204.2916) was also added. 
+
+# Reproducability
+Start in src/simulations.py to get the data for the stability plots. They will be saved to the folder data/custom/... . Then plot the data either with calculate_thresholds.py or see the jupyter notebooks in the main project.
 
 
 
