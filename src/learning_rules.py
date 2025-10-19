@@ -14,8 +14,8 @@ from math_utils import *
 from hydra import compose, initialize
 from omegaconf import OmegaConf
 #add Infomorphic to sys_path:
-import sys
-sys.path.insert(0, '/home/mbluemel/Repos/infomorph_networks/src')
+import sys, os
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(''),"..","..","./infomorph_networks/src")))
 import hopfield, training, mpf
 from im_net import helper_functions as hf
 from im_net import datasets
