@@ -6,6 +6,7 @@ properties: True
 pid: True 
 weights: True
 patterns: True
+grads: False
 require_comment: True #disable for cluster-use
 progress_bars: True #disable for cluster_use
 final:

@@ -1,7 +1,7 @@
 run:
-  dir: ${oc.env:ALTEXPDIR, experiments}/${params.exp_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  dir: ${oc.env:ALTEXPDIR, experiments}/${params.exp_name}/${now:%Y-%m-%d}/${now:%H-%M-%S-%f}
 sweep:
-  dir: ${oc.env:ALTEXPDIR, experiments}/${params.exp_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}_multirun
+  dir: ${oc.env:ALTEXPDIR, experiments}/${params.exp_name}/${now:%Y-%m-%d}/${now:%H-%M-%S-%f}_multirun
   #subdir: ${now:%H-%M-%S}
 #job:
 #  env_set:

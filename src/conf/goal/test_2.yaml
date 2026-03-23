@@ -1,10 +1,9 @@
 # @package _global_
-pi_x: ??
 model:
   layer1:
-    gamma: 
+    gamma: #0.1 I(Z:X:Y)
       - 0
       - 0
-      - 1
-      - {pi_x}
+      - 0.9
+      - -1
       - 0

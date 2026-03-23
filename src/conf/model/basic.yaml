@@ -1,6 +1,6 @@
 name: 'IMHopfield'
 #dynamics
-max_iterations: ${params.neurons}
+max_iterations: 100
 sequential: False # memory leak fixed
 ordered: False
 binary: False

@@ -1,5 +1,5 @@
 defaults:
-  - /mods/capacity: optimizer
+  - /mods/capacity: optimize
   - override /goal@_global_.goal: grid #this does not work
   - override /storage@_global_.storage: cluster
   - override sweeper: optuna
