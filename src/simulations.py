@@ -76,7 +76,7 @@ def weights_distribution_plot(num_neurons, num_of_patterns, params):
     plt.close(fig=fig)
     return None
 
-def custom_flips_and_patterns(num_neurons, num_of_flips,n_pattern_list, num_repetitions, params, plot = False):
+def custom_flips_and_patterns(num_neurons, num_of_flips,n_pattern_list, num_repetitions, params,seed=None,plot = False):
     '''
     :param num_neurons:
     :param num_of_flips:
@@ -92,8 +92,13 @@ def custom_flips_and_patterns(num_neurons, num_of_flips,n_pattern_list, num_repe
     time = retrieval_options['time_of_retrieval']
     sync = retrieval_options['sync']
     maximum_patterns = np.max(n_pattern_list)
-    parent = '/user/mblueme/u26551/.project/dir.project/mark/data/Tolmachev'
-    file_name = f'{parent}/data/custom/flips_and_patterns_{get_postfix(rule, learning_options, num_neurons, maximum_patterns, num_repetitions)}.pkl'
+    # parent = '/user/mblueme/u26551/.project/dir.project/mark/data/Tolmachev'
+    parent = '/home/nst/mbluemel/Repos/Hopfield_Nets'
+    seed_string = ''
+    if seed is not None:
+        seed_string = f'seed_{seed}'
+    file_name = f'{parent}/data/test/flips_and_patterns_{get_postfix(rule, learning_options, num_neurons, maximum_patterns, num_repetitions)}_{seed_string}.pkl'
+    
     results = np.zeros((len(n_pattern_list), num_of_flips, num_repetitions))
     for r in range(num_repetitions):
         HN = Hopfield_network(num_neurons=num_neurons)
@@ -122,13 +127,22 @@ def custom_flips_and_patterns(num_neurons, num_of_flips,n_pattern_list, num_repe
         flips_and_patterns_contour_plot(file_name)
     return None
 
+def init_seed(seed):
+    if seed is not None:
+        np.random.seed(seed)
+        torch.manual_seed(seed)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--neurons", type=int, default=100)
     parser.add_argument("--reps", type=int, default=5)
     parser.add_argument("--num_points", type=int, default=21)
-    # parser.add_argument("--seed", type=int, default=100)
+    parser.add_argument("--seed", type=int)
     args = parser.parse_args()
+    seed = args.seed # int or None
+    if seed is not None:
+        init_seed(seed)
+        print(f'Using custom seed {seed}.')
     # run simulations
     num_neurons = args.neurons
     num_of_flips = num_neurons//2
@@ -139,7 +153,7 @@ if __name__ == '__main__':
 
     rules = [
             #non-incremental
-            # 'Hebb',
+            'Hebb',
             # 'Hebb',
             #'Storkey',
             #'Pseudoinverse',
@@ -170,13 +184,13 @@ if __name__ == '__main__':
             # 'DescentExpBarrierSI'
 
             # Infomorphic rule
-            'Infomorphic',
+            # 'Infomorphic',
             # 'Infomorphic', #optimized
             # 'MPF'
     ]
     options = [# Non-incremental
                 #{'incremental' : False, 'sc' : True },  #Hebbian
-                # {'incremental' : False, 'sc' : False },  #Hebbian
+                {'incremental' : False, 'sc' : False },  #Hebbian
                 #{'incremental' : False, 'sc': True},  # Storkey
                 #{},  #Pseudoinverse
                 #{'sc' : True, 'lr': 1e-2, 'maxiter': 200},  # Krauth-Mezard
@@ -206,7 +220,7 @@ if __name__ == '__main__':
                 # {'sc' : False, 'lr': 1e-2, 'k': 1.0, 'maxiter': 100},  # GardnerKrauthMezard
                 # {'sc' : False, 'incremental': False, 'tol': 1e-3, 'lmbd': 0.5},  # DescentExpBarrierSI #add bonds
                 #{'sc' : False, 'lr': 1e-2, 'tol': 1e-1},  # logistic
-                {'sc' : False, 'lr': 0.05,  'maxiter' : 5000,'goal':[0,0,1,0,0],'symmetric':False} #Infomorphic,redundancy
+                # {'sc' : False, 'lr': 0.05,  'maxiter' : 5000,'goal':[0,0,1,0,0],'symmetric':False} #Infomorphic,redundancy
                 #{'sc' : False, 'lr': 0.05,  'maxiter' : 1001,'goal':[0,0,1,0,0],'symmetric':False,'reps':1} #add for reps
                 # {'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0,0,-1,0,1],'symmetric':False}, #Infomorphic
                 # {'sc' : False, 'lr': 0.05,  'maxiter' : 5000,'goal':[-0.27, -0.68, 0.68, -0.77, -0.8],'symmetric':False}, #optimized (i)
@@ -226,7 +240,7 @@ if __name__ == '__main__':
         #custom
         # x_range = np.logspace(1,2.3,20,dtype=int)
         x_range = np.linspace(1,2*num_neurons+1,num_points,dtype=int)
-        custom_flips_and_patterns(num_neurons,num_of_flips,x_range,num_repetitions,params)
+        custom_flips_and_patterns(num_neurons,num_of_flips,x_range,num_repetitions,params,seed=seed)
 
     # for i in range(1,150):
     #     print(i)
