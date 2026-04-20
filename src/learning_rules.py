@@ -15,7 +15,7 @@ from hydra import compose, initialize
 from omegaconf import OmegaConf
 #add Infomorphic to sys_path:
 import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.abspath(''),"..","..","./infomorph_networks/src")))
+sys.path.append(os.path.abspath('/user/mblueme/u26551/.project/dir.project/mark/infomorph_networks/src'))
 import hopfield, training, mpf
 from im_net import helper_functions as hf
 from im_net import datasets
@@ -522,8 +522,11 @@ def infomorphic_lr(N, patterns, weights, biases,sc,lr,maxiter, goal,symmetric=Fa
                                                         f"model.layer1.gamma={goal}",
                                                         f"params.simple_symmetric={symmetric}",
                                                         f'params.reps={1}',
-                                                        f'storage=minimal'] #don't save useless data
+                                                        f'storage=cluster'] #don't save useless data
                                                         )
+    #init storage options
+    if not cfg.storage.progress_bars:
+        fastprogress.fastprogress.NO_BAR = True
     #prepare torch
     device=hf.get_device(cfg.params.pref_gpu)
     #--prepare the model--

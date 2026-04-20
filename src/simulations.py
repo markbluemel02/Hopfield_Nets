@@ -7,6 +7,7 @@ from copy import deepcopy
 from visualisation import flips_and_patterns_contour_plot
 import sys
 import warnings
+import argparse
 
 if not sys.warnoptions:
     warnings.simplefilter("ignore")
@@ -91,7 +92,8 @@ def custom_flips_and_patterns(num_neurons, num_of_flips,n_pattern_list, num_repe
     time = retrieval_options['time_of_retrieval']
     sync = retrieval_options['sync']
     maximum_patterns = np.max(n_pattern_list)
-    file_name = f'../data/custom/flips_and_patterns_{get_postfix(rule, learning_options, num_neurons, maximum_patterns, num_repetitions)}.pkl'
+    parent = '/user/mblueme/u26551/.project/dir.project/mark/data/Tolmachev'
+    file_name = f'{parent}/data/custom/flips_and_patterns_{get_postfix(rule, learning_options, num_neurons, maximum_patterns, num_repetitions)}.pkl'
     results = np.zeros((len(n_pattern_list), num_of_flips, num_repetitions))
     for r in range(num_repetitions):
         HN = Hopfield_network(num_neurons=num_neurons)
@@ -116,29 +118,36 @@ def custom_flips_and_patterns(num_neurons, num_of_flips,n_pattern_list, num_repe
                 results[i , n_f - 1, r] = overlap
     pickle.dump(results, open(file_name,'wb+'))
     if plot == True:
-        file_name = f'../data/flips_and_patterns_{get_postfix(rule, learning_options, num_neurons, num_of_patterns, num_repetitions)}.pkl'
+        file_name = f'{parent}/data/flips_and_patterns_{get_postfix(rule, learning_options, num_neurons, num_of_patterns, num_repetitions)}.pkl'
         flips_and_patterns_contour_plot(file_name)
     return None
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--neurons", type=int, default=100)
+    parser.add_argument("--reps", type=int, default=5)
+    parser.add_argument("--num_points", type=int, default=21)
+    # parser.add_argument("--seed", type=int, default=100)
+    args = parser.parse_args()
     # run simulations
-    num_neurons = 100
-    num_of_flips = 50
-    num_of_patterns = 100
-    num_repetitions = 20
+    num_neurons = args.neurons
+    num_of_flips = num_neurons//2
+    # num_of_patterns = 100
+    num_repetitions = args.reps
+    num_points = args.num_points
 
 
     rules = [
             #non-incremental
             # 'Hebb',
-            'Hebb',
+            # 'Hebb',
             #'Storkey',
             #'Pseudoinverse',
             #'KrauthMezard',
             #'DescentExpBarrier',
             #'DescentExpBarrierSI',
             #'DescentL1',
-            'DescentL2',
+            # 'DescentL2',
             #  'DescentL2',
             # 'GardnerKrauthMezard'
             #incremental
@@ -162,12 +171,12 @@ if __name__ == '__main__':
 
             # Infomorphic rule
             'Infomorphic',
-            'Infomorphic', #optimized
-            'MPF'
+            # 'Infomorphic', #optimized
+            # 'MPF'
     ]
     options = [# Non-incremental
                 #{'incremental' : False, 'sc' : True },  #Hebbian
-                {'incremental' : False, 'sc' : False },  #Hebbian
+                # {'incremental' : False, 'sc' : False },  #Hebbian
                 #{'incremental' : False, 'sc': True},  # Storkey
                 #{},  #Pseudoinverse
                 #{'sc' : True, 'lr': 1e-2, 'maxiter': 200},  # Krauth-Mezard
@@ -175,7 +184,7 @@ if __name__ == '__main__':
                 #{'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd': 0.5}, # DescentExpBarrierSI
                 #{'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL1
                 # {'sc' : True, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL2
-                {'sc' : False, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL2
+                # {'sc' : False, 'incremental' : False, 'tol' : 1e-3, 'lmbd' : 0.5, 'alpha' : 0.001},  #DescentL2
                 # {'sc' : False, 'lr' :  1e-2, 'k' : 1.0, 'maxiter' : 100}, #GardnerKrauthMezard
 
                 # incremental
@@ -197,13 +206,13 @@ if __name__ == '__main__':
                 # {'sc' : False, 'lr': 1e-2, 'k': 1.0, 'maxiter': 100},  # GardnerKrauthMezard
                 # {'sc' : False, 'incremental': False, 'tol': 1e-3, 'lmbd': 0.5},  # DescentExpBarrierSI #add bonds
                 #{'sc' : False, 'lr': 1e-2, 'tol': 1e-1},  # logistic
-                #{'sc' : False, 'lr': 0.05,  'maxiter' : 5000,'goal':[0,0,1,0,0],'symmetric':False} #Infomorphic,redundancy
+                {'sc' : False, 'lr': 0.05,  'maxiter' : 5000,'goal':[0,0,1,0,0],'symmetric':False} #Infomorphic,redundancy
                 #{'sc' : False, 'lr': 0.05,  'maxiter' : 1001,'goal':[0,0,1,0,0],'symmetric':False,'reps':1} #add for reps
-                {'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0,0,-1,0,1],'symmetric':False}, #Infomorphic
-                {'sc' : False, 'lr': 0.05,  'maxiter' : 5000,'goal':[-0.27, -0.68, 0.68, -0.77, -0.8],'symmetric':False}, #optimized (i)
-                # {'sc' : False, 'lr': 0.05,  'maxiter' : 5000,'goal':[0.48, -0.16, 0.25, 0.04, -0.63],'symmetric':False} #optimized (ii)
-                # {'sc' : False, 'lr': 0.05,  'maxiter' : 5000,'goal':[-0.07, -0.31, 0.41, -0.17, -0.65],'symmetric':False} #optimized (iii)
-                {'sc' : False, 'lr': 0.08,  'maxiter' : 40000}
+                # {'sc' : False, 'lr': 1e-1,  'maxiter' : 1000,'goal':[0,0,-1,0,1],'symmetric':False}, #Infomorphic
+                # {'sc' : False, 'lr': 0.05,  'maxiter' : 5000,'goal':[-0.27, -0.68, 0.68, -0.77, -0.8],'symmetric':False}, #optimized (i)
+                # # {'sc' : False, 'lr': 0.05,  'maxiter' : 5000,'goal':[0.48, -0.16, 0.25, 0.04, -0.63],'symmetric':False} #optimized (ii)
+                # # {'sc' : False, 'lr': 0.05,  'maxiter' : 5000,'goal':[-0.07, -0.31, 0.41, -0.17, -0.65],'symmetric':False} #optimized (iii)
+                # {'sc' : False, 'lr': 0.08,  'maxiter' : 40000}
                ]
     for i, rule in enumerate(rules):
         print(rule)
@@ -216,7 +225,7 @@ if __name__ == '__main__':
         # flips_and_patterns(num_neurons, num_of_flips, num_of_patterns, num_repetitions, params)
         #custom
         # x_range = np.logspace(1,2.3,20,dtype=int)
-        x_range = np.linspace(1,201,41,dtype=int)
+        x_range = np.linspace(1,2*num_neurons+1,num_points,dtype=int)
         custom_flips_and_patterns(num_neurons,num_of_flips,x_range,num_repetitions,params)
 
     # for i in range(1,150):
